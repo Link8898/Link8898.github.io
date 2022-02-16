@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\calculator",
-    "\\poemgenerator"
+    "\\secret",
+    "\\storygenerator"
   ],
-  "SelectedNode": "\\generator.py",
+  "SelectedNode": "\\secret\\index.html",
   "PreviewInSolutionExplorer": false
 }
