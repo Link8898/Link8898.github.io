@@ -1,9 +1,10 @@
 {
   "ExpandedNodes": [
     "",
+    "\\poemgenerator",
     "\\secret",
     "\\storygenerator"
   ],
-  "SelectedNode": "\\secret\\index.html",
+  "SelectedNode": "\\index.html",
   "PreviewInSolutionExplorer": false
 }

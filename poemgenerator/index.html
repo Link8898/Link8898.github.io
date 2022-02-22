@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta charset="utf-8">
+    <title>Poem Generator</title>
+    <link rel="icon" type="image/png" href="../Images/favicon.ico.png">
+    <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.8.7/brython.min.js">
+    </script>
+    <style>
+        * {
+            font-family: opensans;
+            font-weight: normal;
+            font-size: 25px;
+        }
+
+        td {
+            background-color: #FF0055;
+            font-family: opensans;
+            text-align: center;
+            font-size: 25px;
+            padding: 10px 0px;
+            color: #FFD999;
+            outline-style: none;
+            border: none;
+            cursor: pointer;
+            position: fixed;
+            width: 50%;
+            bottom: 10%;
+            left: 25%;
+            /* Disable text selection */
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Chrome, Opera and Firefox */
+            touch-action: manipulation;
+        }
+
+        #result {
+            font-family: opensans;
+            color: #FFD999;
+            text-align: center;
+            font-size: 25px;
+            position: fixed;
+            width: 40%;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        label {
+            font-family: opensans;
+            color: #BF0492;
+            font-size: 25px;
+            position: fixed;
+            /* Disable text selection */
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Chrome, Opera and Firefox */
+            touch-action: manipulation;
+        }
+
+        input {
+            font-family: opensans;
+            color: #21391A;
+            text-align: left;
+            font-size: 25px;
+            position: fixed;
+            width: 20%;
+        }
+    </style>
+</head>
+	<body onload="brython()">
+	<script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
+    </script>
+	<span><a href="https://link8898.github.io/">Home</a></span>
+
+    <form>
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" value=""><br>
+        <label for="verb">Verb:</label><br>
+        <input type="text" id="verb" name="verb" value=""><br>
+        <label for="adjective">Adjective:</label><br>
+        <input type="text" id="adjective" name="adjective" value=""><br>
+        <label for="location">Location:</label><br>
+        <input type="text" id="location" name="location" value=""><br>
+    </form>
+    <script type="text/python">
+        from browser import alert, document, html
+        import random
+                                                    # Made using table rows as buttons
+        poemText = html.BLOCKQUOTE()
+        buttons = html.TD()
+
+        poemText <= html.TR(html.TH(html.DIV("Click the Button", id="result"), colspan=3))
+        lines = [""]
+        buttons <= html.TR(html.TD(html.DIV("Generate", id="td"), colspan=3))
+
+        document <= poemText
+        document <= buttons
+
+        result = document["result"]
+
+        def action(event):
+
+            name = document['name'].value
+            verb = document['verb'].value
+            verb = verb.lower() # Convert to lowercase
+            adjective = document['adjective'].value
+            adjective = adjective.lower() # Convert to lowercase
+            location = document['location'].value
+
+            starterInt = random.randrange(0,3)
+            middle1Int = random.randrange(0,3)
+            middle2Int = random.randrange(0,3)
+            middle3Int = random.randrange(0,3)
+            endInt = random.randrange(0,3)
+
+            starters = ("Oh my beloved " + name, "Looking upon you, " + name, "Oh how I adore you, " + name)
+            middles1 = ("Seeing you " + verb, "Oh how I adore you when you're " + verb, "Such a sight to see you " + verb)
+            middles2 = ("out at " + location, "passed " + location, "nearby " + location)
+            middles3 = ("I wish to be as " + adjective + " as you.", "I yearn to see you " + adjective + " once again.", "I wish for you to be as " + adjective + " as can be.")
+            ends = ("Until we meet again, I shall wait for your return.", "Oh how I long to see you once again.", "I hope we meet again some day.")
+
+            starter = starters[starterInt]
+            middle1 = middles1[middle1Int]
+            middle2 = middles2[middle2Int]
+            middle3 = middles3[middle3Int]
+            end = ends[endInt]
+
+            finalPoem = starter + ", " + middle1 + " " + middle2 + ", " + middle3 + " " + end
+            result.text = finalPoem
+
+        for button in document.select("td"):
+            button.bind("click", action)
+    </script>
+	</body>
+</html>
