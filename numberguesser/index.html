@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta charset="utf-8">
+    <title>Number Guesser</title>
+    <link rel="icon" type="image/png" href="../Images/favicon.ico.png">
+</head>
+<body onload="brython()">
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
+    </script>
+    <div class="homeButton" id="homeButton">
+        <span><a href="https://link8898.github.io/">Home</a></span>
+    </div>
+    <form>
+        <label for="guess">Your Guess:</label><br>
+        <input type="text" id="guess" name="guess" value="" autocomplete="off"><br>
+    </form>
+    <script type="text/python">
+        from browser import alert, document, html
+        import random
+                                                    # Made using table rows as buttons
+        poemText = html.BLOCKQUOTE()
+        buttons = html.TD()
+
+        poemText <= html.TR(html.TH(html.DIV("Type a number 0-9 to begin", id="result"), colspan=3))
+        lines = [""]
+        buttons <= html.TR(html.TD(html.DIV("Guess", id="td"), colspan=3))
+
+        document <= poemText
+        document <= buttons
+
+        result = document["result"]
+
+        randomNumber = random.randrange(0,10)
+        randomNumberString = str(randomNumber)
+        global guessAmount
+        guessAmount = 5
+        noGuesses = False
+
+        def action(event):
+            playerGuess = document['guess'].value
+
+            if playerGuess == randomNumberString:           # Guessed correctly
+                result.text = "You Won!"
+
+            if playerGuess < randomNumberString:            # Guessed too low
+                global guessAmount
+                guessAmount = guessAmount - 0.5
+                guessedValue = guessAmount
+                guessAmountString = str(guessedValue)
+                guessAmountString = guessAmountString[0:-2]
+                if guessedValue > 1:
+                    result.text = "Higher. You have " + guessAmountString + " guesses remaining."
+                if guessedValue == 1:
+                    result.text = "Higher. You have " + guessAmountString + " guess remaining."
+
+            if playerGuess > randomNumberString:            # Guessed too high
+                global guessAmount
+                guessAmount = guessAmount - 0.5
+                guessedValue = guessAmount
+                guessAmountString = str(guessedValue)
+                guessAmountString = guessAmountString[0:-2]
+                if guessedValue > 1:
+                    result.text = "Lower. You have " + guessAmountString + " guesses remaining."
+                if guessedValue == 1:
+                    result.text = "Lower. You have " + guessAmountString + " guess remaining."
+
+            if guessAmount < 1:
+                result.text = "Game Over"
+
+        for button in document.select("td"):
+            button.bind("click", action)
+    </script>
+</body>
+</html>

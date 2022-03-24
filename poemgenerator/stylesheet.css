@@ -3,3 +3,87 @@
 body {
 	background-color: #242424;
 }
+
+.homeButton {
+	font-family: opensans;
+	color: #BF0492;
+	font-size: 25px;
+	position: relative;
+	/* Disable text selection */
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Chrome, Opera and Firefox */
+	touch-action: manipulation;
+}
+
+* {
+	font-family: opensans;
+	font-weight: normal;
+	font-size: 25px;
+}
+
+td {
+	background-color: #FF0055;
+	font-family: opensans;
+	text-align: center;
+	font-size: 25px;
+	padding: 10px 0px;
+	color: #FFD999;
+	outline-style: none;
+	border: none;
+	cursor: pointer;
+	position: fixed;
+	width: 50%;
+	bottom: 10%;
+	left: 25%;
+	/* Disable text selection */
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Chrome, Opera and Firefox */
+	touch-action: manipulation;
+}
+
+#result {
+	font-family: opensans;
+	color: #FFD999;
+	text-align: center;
+	font-size: 25px;
+	position: fixed;
+	width: 40%;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+label {
+	font-family: opensans;
+	color: #BF0492;
+	font-size: 25px;
+	position: fixed;
+	/* Disable text selection */
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Chrome, Opera and Firefox */
+	touch-action: manipulation;
+}
+
+input {
+	font-family: opensans;
+	color: #21391A;
+	text-align: left;
+	font-size: 25px;
+	position: fixed;
+	width: 20%;
+	/* css 3 */
+	border-radius: 10px;
+	/* mozilla */
+	-moz-border-radius: 10px;
+	/* webkit */
+	-webkit-border-radius: 10px;
+}

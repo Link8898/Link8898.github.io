@@ -6,91 +6,24 @@
     <meta charset="utf-8">
     <title>Poem Generator</title>
     <link rel="icon" type="image/png" href="../Images/favicon.ico.png">
-    <script type="text/javascript"
-            src="https://cdn.jsdelivr.net/npm/brython@3.8.7/brython.min.js">
-    </script>
-    <style>
-        * {
-            font-family: opensans;
-            font-weight: normal;
-            font-size: 25px;
-        }
-
-        td {
-            background-color: #FF0055;
-            font-family: opensans;
-            text-align: center;
-            font-size: 25px;
-            padding: 10px 0px;
-            color: #FFD999;
-            outline-style: none;
-            border: none;
-            cursor: pointer;
-            position: fixed;
-            width: 50%;
-            bottom: 10%;
-            left: 25%;
-            /* Disable text selection */
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Old versions of Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Chrome, Opera and Firefox */
-            touch-action: manipulation;
-        }
-
-        #result {
-            font-family: opensans;
-            color: #FFD999;
-            text-align: center;
-            font-size: 25px;
-            position: fixed;
-            width: 40%;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        label {
-            font-family: opensans;
-            color: #BF0492;
-            font-size: 25px;
-            position: fixed;
-            /* Disable text selection */
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Old versions of Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Chrome, Opera and Firefox */
-            touch-action: manipulation;
-        }
-
-        input {
-            font-family: opensans;
-            color: #21391A;
-            text-align: left;
-            font-size: 25px;
-            position: fixed;
-            width: 20%;
-        }
-    </style>
 </head>
-	<body onload="brython()">
-	<script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+<body onload="brython()">
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
     </script>
-	<span><a href="https://link8898.github.io/">Home</a></span>
-
+    <div class="homeButton" id="homeButton">
+        <span><a href="https://link8898.github.io/">Home</a></span>
+    </div>
     <form>
         <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" value=""><br>
+        <input type="text" id="name" name="name" value="" autocomplete="off"><br>
         <label for="verb">Verb:</label><br>
-        <input type="text" id="verb" name="verb" value=""><br>
+        <input type="text" id="verb" name="verb" value="" autocomplete="off"><br>
         <label for="adjective">Adjective:</label><br>
-        <input type="text" id="adjective" name="adjective" value=""><br>
+        <input type="text" id="adjective" name="adjective" value="" autocomplete="off"><br>
         <label for="location">Location:</label><br>
-        <input type="text" id="location" name="location" value=""><br>
+        <input type="text" id="location" name="location" value="" autocomplete="off"><br>
     </form>
     <script type="text/python">
         from browser import alert, document, html
@@ -138,8 +71,17 @@
             finalPoem = starter + ", " + middle1 + " " + middle2 + ", " + middle3 + " " + end
             result.text = finalPoem
 
+            if name == "":
+                result.text = "You must fill out all of the boxes"
+            if verb == "":
+                result.text = "You must fill out all of the boxes"
+            if adjective == "":
+                result.text = "You must fill out all of the boxes"
+            if location == "":
+                result.text = "You must fill out all of the boxes"
+
         for button in document.select("td"):
             button.bind("click", action)
     </script>
-	</body>
+</body>
 </html>

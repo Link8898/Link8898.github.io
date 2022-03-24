@@ -1,10 +1,7 @@
 {
   "ExpandedNodes": [
     "",
-    "\\poemgenerator",
-    "\\secret",
-    "\\storygenerator"
+    "\\numberguesser"
   ],
-  "SelectedNode": "\\stylesheet.css",
   "PreviewInSolutionExplorer": false
 }
