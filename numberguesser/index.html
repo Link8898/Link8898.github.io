@@ -69,6 +69,33 @@
                 if guessedValue == 1:
                     result.text = "Lower. You have " + guessAmountString + " guess remaining."
 
+            validGuess = False                              # Check if guessed value is invalid
+
+            if playerGuess == "0":
+                validGuess = True
+            if playerGuess == "1":
+                validGuess = True
+            if playerGuess == "2":
+                validGuess = True
+            if playerGuess == "3":
+                validGuess = True
+            if playerGuess == "4":
+                validGuess = True
+            if playerGuess == "5":
+                validGuess = True
+            if playerGuess == "6":
+                validGuess = True
+            if playerGuess == "7":
+                validGuess = True
+            if playerGuess == "8":
+                validGuess = True
+            if playerGuess == "9":
+                validGuess = True
+
+            if validGuess == False:
+                result.text = "Type a valid number 0-9"
+                guessAmount = guessAmount + 0.5
+
             if guessAmount < 1:
                 result.text = "Game Over"
 

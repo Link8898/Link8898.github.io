@@ -1,14 +1,27 @@
- @font-face { font-family: opensans; src: url('../Resources/OpenSans-Regular.ttf');}
+ @font-face { font-family: opensans; src: url('../../../Resources/OpenSans-Regular.ttf');}
 
 body {
 	background-color: #006D4B;
+	/* The image used */
+	background-image: url(../../../Images/RedBG.png);
+	/* Full height */
+	height: 100%;
+	/* Center and scale the image nicely */
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
-.homeButton {
+#information {
 	font-family: opensans;
-	color: #BF0492;
-	font-size: 25px;
+	color: #001B19;
+	text-align: center;
+	font-size: 15px;
 	position: relative;
+	width: 40%;
+	top: 50%;
+	left: 30%;
+
 	/* Disable text selection */
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
@@ -18,13 +31,20 @@ body {
 	touch-action: manipulation;
 }
 
-* {
+#sideImage {
+	position: fixed;
+	top: 50%;
+	left: 85%;
+	transform: translate(-50%, -50%);
+}
+
+#continue {
 	font-family: opensans;
 	font-weight: normal;
 	font-size: 25px;
 }
 
-td {
+#button {
 	background-color: #FF0055;
 	font-family: opensans;
 	text-align: center;
@@ -35,9 +55,9 @@ td {
 	border: none;
 	cursor: pointer;
 	position: fixed;
-	width: 50%;
-	bottom: 10%;
-	left: 25%;
+	width: 20%;
+	bottom: 65%;
+	left: 5%;
 	/* Disable text selection */
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
@@ -45,6 +65,12 @@ td {
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none; /* Chrome, Opera and Firefox */
 	touch-action: manipulation;
+	/* css 3 */
+	border-radius: 10px;
+	/* mozilla */
+	-moz-border-radius: 10px;
+	/* webkit */
+	-webkit-border-radius: 10px;
 }
 
 #result {
@@ -53,45 +79,21 @@ td {
 	text-align: center;
 	font-size: 25px;
 	position: fixed;
-	width: 40%;
-	top: 60%;
-	left: 50%;
+	width: 20%;
+	top: 20%;
+	left: 15%;
 	transform: translate(-50%, -50%);
-	/* Disable text selection */
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-moz-user-select: none; /* Old versions of Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Chrome, Opera and Firefox */
-	touch-action: manipulation;
-}
-
-label {
-	font-family: opensans;
-	color: #FFA900;
-	font-size: 25px;
-	position: fixed;
-	top: 30%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	/* Disable text selection */
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-moz-user-select: none; /* Old versions of Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Chrome, Opera and Firefox */
-	touch-action: manipulation;
 }
 
 input {
 	font-family: opensans;
 	color: #21391A;
-	text-align: left;
+	text-align: center;
 	font-size: 25px;
 	position: fixed;
 	width: 20%;
-	top: 40%;
-	left: 50%;
+	top: 10%;
+	left: 15%;
 	transform: translate(-50%, -50%);
 	/* css 3 */
 	border-radius: 10px;

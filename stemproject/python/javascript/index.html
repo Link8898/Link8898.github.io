@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta charset="utf-8">
+    <title>STEM Presentation</title>
+    <link rel="icon" type="image/png" href="../../../Images/favicon.ico.png">
+</head>
+<body onload="brython()">
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
+    </script>
+
+    <form>
+        <input type="text" id="answer" name="answer" value="" autocomplete="off" placeholder=". . ."><br>
+    </form>
+
+    <script type="text/python">
+        from browser import alert, document, html
+        import random
+                                                    # Made using table rows as buttons
+        passwordText = html.BLOCKQUOTE()
+        buttons = html.TD()
+
+        passwordText <= html.TR(html.TH(html.DIV("Secret Password", id="result"), colspan=3))
+        lines = [""]
+        buttons <= html.TR(html.TD(html.DIV("Enter Answer", id="button"), colspan=3))
+
+        document <= passwordText
+        document <= buttons
+
+        result = document["result"]
+
+        global lastAnswer
+        lastAnswer = " "
+
+        def action(event):
+            collection = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+            answer = document['answer'].value
+            answer = answer.lower()
+            password = collection[18] + collection[24] + collection[13] + collection[19] + collection[0] + collection[23]
+            global lastAnswer
+
+            if answer == password:
+                result.text = "Correct! link8898.github.io/secret/"
+                if answer != lastAnswer:
+                    document <= html.AUDIO(src='../../Success.mp3', autoplay=True)
+
+            if answer != password:
+                result.text = "Incorrect"
+                if answer != lastAnswer:
+                    document <= html.AUDIO(src='../../Error.mp3', autoplay=True)
+
+            if answer == collection[1] + collection[4] + collection[13]:
+                result.text = "Ben?"
+                if answer != lastAnswer:
+                    document <= html.AUDIO(src='../../Ben.mp3', autoplay=True)
+
+            lastAnswer = answer
+
+        for button in document.select("td"):
+            button.bind("click", action)
+    </script>
+
+    <div class="information" id="information">
+        <h1>STEM Presentation</h1>
+        <hr>
+        <h2>(Who is your Go-To authority on your subject?)</h2>
+        <hr>
+        <h3>
+            My dad has been my go-to authority for this project
+        </h3>
+        <hr>
+        <h4>
+            My dad has been working in the programming and technology industry for years.<br />
+            My dad currently works in the employee technology field and has had lots of experience with web development over the years.
+        </h4>
+        <hr>
+
+    </div>
+
+    <div class="sideImage" id="sideImage">
+        <img src="../../../Images/BankLogo.png" alt="Bank Logo">
+    </div>
+</body>
+</html>
