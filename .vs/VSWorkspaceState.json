@@ -1,9 +1,14 @@
 {
   "ExpandedNodes": [
     "",
-    "\\poemgenerator",
-    "\\stemproject"
+    "\\secret",
+    "\\stemproject",
+    "\\stemproject\\python",
+    "\\stemproject\\python\\javascript",
+    "\\stemproject\\python\\javascript\\syntax",
+    "\\stemproject\\python\\javascript\\syntax\\documentation",
+    "\\stemproject\\python\\javascript\\syntax\\documentation\\html"
   ],
-  "SelectedNode": "\\stylesheet.css",
+  "SelectedNode": "\\stemproject\\python\\javascript\\syntax\\documentation\\html\\stylesheet.css",
   "PreviewInSolutionExplorer": false
 }

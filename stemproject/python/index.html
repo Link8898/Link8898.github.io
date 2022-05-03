@@ -2,10 +2,23 @@
 <html>
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="../stylesheet.css">
     <meta charset="utf-8">
     <title>STEM Presentation</title>
     <link rel="icon" type="image/png" href="../../Images/favicon.ico.png">
+    <style>
+        body {
+            background-color: #006D4B;
+            /* The image used */
+            background-image: url(../../Images/BlueBG.png);
+            /* Full height */
+            height: 100%;
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body onload="brython()">
     <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
@@ -36,29 +49,37 @@
         global lastAnswer
         lastAnswer = " "
 
+        global correctBool
+        correctBool = False
+
         def action(event):
             collection = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
             answer = document['answer'].value
             answer = answer.lower()
             password = collection[9] + collection[0] + collection[21] + collection[0] + collection[18] + collection[2] + collection[17] + collection[8] + collection[15] + collection[19]
             global lastAnswer
+            global correctBool
 
-            if answer == password:
-                result.text = "Correct! link8898.github.io/secret/"
-                if answer != lastAnswer:
+            if correctBool == False:
+                if answer == password:
                     document <= html.AUDIO(src='../Success.mp3', autoplay=True)
+                    correctBool = True
+                    result.text = ""
+                    link = html.A(href='https://link8898.github.io/stemproject/python/javascript/')
+                    link <= (html.DIV("Correct", id="result"))
+                    document <= link
 
-            if answer != password:
-                result.text = "Incorrect"
-                if answer != lastAnswer:
-                    document <= html.AUDIO(src='../Error.mp3', autoplay=True)
+                if answer != password:
+                    result.text = "Incorrect"
+                    if document['answer'].value != lastAnswer:
+                        document <= html.AUDIO(src='../Error.mp3', autoplay=True)
 
-            if answer == collection[1] + collection[4] + collection[13]:
-                result.text = "Ben?"
-                if answer != lastAnswer:
-                    document <= html.AUDIO(src='../Ben.mp3', autoplay=True)
+                if answer == collection[1] + collection[4] + collection[13]:
+                    result.text = "Ben?"
+                    if document['answer'].value != lastAnswer:
+                        document <= html.AUDIO(src='../Ben.mp3', autoplay=True)
 
-            lastAnswer = answer
+                lastAnswer = document['answer'].value
 
         for button in document.select("td"):
             button.bind("click", action)

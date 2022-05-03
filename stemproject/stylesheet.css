@@ -1,20 +1,8 @@
  @font-face { font-family: opensans; src: url('../Resources/OpenSans-Regular.ttf');}
 
-body {
-	background-color: #006D4B;
-	/* The image used */
-	background-image: url(../Images/TurquoiseBG.png);
-	/* Full height */
-	height: 100%;
-	/* Center and scale the image nicely */
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-}
-
 #information {
 	font-family: opensans;
-	color: #001B19;
+	color: darkgray;
 	text-align: center;
 	font-size: 15px;
 	position: relative;
@@ -29,6 +17,13 @@ body {
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none; /* Chrome, Opera and Firefox */
 	touch-action: manipulation;
+}
+
+#sideImage {
+	position: fixed;
+	top: 50%;
+	left: 85%;
+	transform: translate(-50%, -50%);
 }
 
 #continue {
