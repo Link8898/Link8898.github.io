@@ -62,7 +62,7 @@
 
             if correctBool == False:
                 if answer == password:
-                    document <= html.AUDIO(src='../../Success.mp3', autoplay=True)
+                    document <= html.AUDIO(src='../../SFX/KhanSuccess.mp3', autoplay=True)
                     correctBool = True
                     result.text = ""
                     link = html.A(href='https://link8898.github.io/stemproject/python/javascript/syntax/')
@@ -72,12 +72,12 @@
                 if answer != password:
                     result.text = "Incorrect"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../../Error.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../../SFX/FareFailure.mp3', autoplay=True)
 
                 if answer == collection[1] + collection[4] + collection[13]:
                     result.text = "Ben?"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../../Ben.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../../SFX/Ben.mp3', autoplay=True)
 
                 lastAnswer = document['answer'].value
 
@@ -99,7 +99,10 @@
             My dad currently works in the employee technology field and has had lots of experience with web development over the years.
         </h4>
         <hr>
-
+        <h4>
+            <a href="https://business.bofa.com/content/boaml/en_us/home.html" target="_blank">BofAML</a> - This is the site my dad has recently invested a lot of his effort into.
+        </h4>
+        <hr>
     </div>
 
     <div class="sideImage" id="sideImage">

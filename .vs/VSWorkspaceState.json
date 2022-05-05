@@ -1,7 +1,6 @@
 {
   "ExpandedNodes": [
     "",
-    "\\secret",
     "\\stemproject",
     "\\stemproject\\python",
     "\\stemproject\\python\\javascript",
@@ -9,6 +8,6 @@
     "\\stemproject\\python\\javascript\\syntax\\documentation",
     "\\stemproject\\python\\javascript\\syntax\\documentation\\html"
   ],
-  "SelectedNode": "\\stemproject\\python\\javascript\\syntax\\documentation\\html\\stylesheet.css",
+  "SelectedNode": "\\stemproject\\python\\javascript\\syntax\\documentation\\html\\index.html",
   "PreviewInSolutionExplorer": false
 }

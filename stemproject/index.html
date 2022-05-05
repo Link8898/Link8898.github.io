@@ -18,6 +18,23 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
+
+        .sources {
+            font-family: opensans;
+            color: darkgray;
+            font-size: 15px;
+            position: relative;
+            width: 40%;
+            top: 50%;
+            left: 30%;
+            /* Disable text selection */
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Chrome, Opera and Firefox */
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body onload="brython()">
@@ -62,7 +79,7 @@
 
             if correctBool == False:
                 if answer == password:
-                    document <= html.AUDIO(src='Success.mp3', autoplay=True)
+                    document <= html.AUDIO(src='SFX/DuoSuccess.mp3', autoplay=True)
                     correctBool = True
                     result.text = ""
                     link = html.A(href='https://link8898.github.io/stemproject/python/')
@@ -72,12 +89,12 @@
                 if answer != password:
                     result.text = "Incorrect"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='Error.mp3', autoplay=True)
+                        document <= html.AUDIO(src='SFX/DuoFailure.mp3', autoplay=True)
 
                 if answer == collection[1] + collection[4] + collection[13]:
                     result.text = "Ben?"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='Ben.mp3', autoplay=True)
+                        document <= html.AUDIO(src='SFX/Ben.mp3', autoplay=True)
 
                 lastAnswer = document['answer'].value
 
@@ -92,8 +109,19 @@
         <hr>
         <h4>
             For this project I wanted to deepen my understanding of other programming languages and how I can use them.<br />
-            I decided to start the year off by learning Python because it is known to be one of the easiest languages to understand. I used a few resources such as w3schools and StackOverflow to start learning and retaining information about Python.
         </h4>
+        <hr>
+        <h4>List of resources I used:<br /></h4>
+    </div>
+    <div class="sources" id="sources">
+        <ul>
+            <li><a href="https://stackoverflow.com/" target="_blank">StackOverflow</a> ----------------------------------------> For fixing issues</li>
+            <li><a href="https://www.w3schools.com/python/" target="_blank">w3schools</a> ----------------------------------------> For learning languages</li>
+            <li><a href="https://brython.info/static_doc/en/intro.html" target="_blank">Brython Docs</a> ----------------------------------------> For converting code</li>
+            <li><a href="https://github.com/" target="_blank">GitHub</a> ----------------------------------------> For learning from examples</li>
+        </ul>
+    </div>
+    <div class="information" id="information">
         <hr>
     </div>
 </body>

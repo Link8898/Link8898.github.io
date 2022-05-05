@@ -18,6 +18,10 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
+
+        .plain {
+            text-align: center;
+        }
     </style>
 </head>
 <body onload="brython()">
@@ -62,7 +66,7 @@
 
             if correctBool == False:
                 if answer == password:
-                    document <= html.AUDIO(src='../../../../Success.mp3', autoplay=True)
+                    document <= html.AUDIO(src='../../../../SFX/BenSuccess.mp3', autoplay=True)
                     correctBool = True
                     result.text = ""
                     link = html.A(href='https://link8898.github.io/stemproject/python/javascript/syntax/documentation/html/')
@@ -72,12 +76,12 @@
                 if answer != password:
                     result.text = "Incorrect"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../../../../Error.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../../../../SFX/BenFailure.mp3', autoplay=True)
 
                 if answer == collection[1] + collection[4] + collection[13]:
                     result.text = "Ben?"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../../../../Ben.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../../../../SFX/Ben.mp3', autoplay=True)
 
                 lastAnswer = document['answer'].value
 
@@ -99,7 +103,14 @@
             I was able to stay focused on what I wanted to learn throughout the entire project and ended up learning more than I originally anticipated.
         </h4>
         <hr>
-
+    </div>
+    <div class="plain" id="plain">
+        HTML displays the text on the page.
+    </div>
+    <div class="information" id="information">
+        CSS stylizes the page.<br />
+        <a href="https://link8898.github.io/stemproject/python/javascript/syntax/documentation/">Javascript adds function to the page.</a>
+        <hr>
     </div>
 
     <div class="sideImage" id="sideImage">

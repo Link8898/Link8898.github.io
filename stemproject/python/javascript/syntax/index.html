@@ -62,7 +62,7 @@
 
             if correctBool == False:
                 if answer == password:
-                    document <= html.AUDIO(src='../../../Success.mp3', autoplay=True)
+                    document <= html.AUDIO(src='../../../SFX/AppleSuccess.mp3', autoplay=True)
                     correctBool = True
                     result.text = ""
                     link = html.A(href='https://link8898.github.io/stemproject/python/javascript/syntax/documentation/')
@@ -72,12 +72,12 @@
                 if answer != password:
                     result.text = "Incorrect"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../../../Error.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../../../SFX/BeepFailure.mp3', autoplay=True)
 
                 if answer == collection[1] + collection[4] + collection[13]:
                     result.text = "Ben?"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../../../Ben.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../../../SFX/Ben.mp3', autoplay=True)
 
                 lastAnswer = document['answer'].value
 
@@ -91,12 +91,12 @@
         <h2>(What's the biggest intellectual risk/challenge you faced in exploring your topic?)</h2>
         <hr>
         <h3>
-            My biggest challenge was searching for a reliable tool to convert my Python code into Javascript code
+            My biggest intellectual challenge was figuring out how to convert my Python code into Javascript code
         </h3>
         <hr>
         <h4>
             I needed a way to use Python in my website so i could complete my goal for this project.<br />
-            I stumbled upon Brython and used it to overcome my biggest intellectual challenge.
+            I stumbled upon Brython and used it to eventually overcome my biggest intellectual challenge.
         </h4>
         <hr>
 

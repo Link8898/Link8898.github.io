@@ -62,7 +62,7 @@
 
             if correctBool == False:
                 if answer == password:
-                    document <= html.AUDIO(src='../Success.mp3', autoplay=True)
+                    document <= html.AUDIO(src='../SFX/CollectSuccess.mp3', autoplay=True)
                     correctBool = True
                     result.text = ""
                     link = html.A(href='https://link8898.github.io/stemproject/python/javascript/')
@@ -72,12 +72,12 @@
                 if answer != password:
                     result.text = "Incorrect"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../Error.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../SFX/RobotFailure.mp3', autoplay=True)
 
                 if answer == collection[1] + collection[4] + collection[13]:
                     result.text = "Ben?"
                     if document['answer'].value != lastAnswer:
-                        document <= html.AUDIO(src='../Ben.mp3', autoplay=True)
+                        document <= html.AUDIO(src='../SFX/Ben.mp3', autoplay=True)
 
                 lastAnswer = document['answer'].value
 
@@ -95,14 +95,14 @@
         </h3>
         <hr>
         <h4>
-            Brython - Python in the client-side of programming.<br />
+            <a href="https://brython.info/static_doc/en/intro.html" target="_blank">Brython</a> - Python in the client-side of programming.<br />
             Python and HTML are not compatible with each other, so Brython is used to make them work together.
         </h4>
-        <h4><a href="https://link8898.github.io/storygenerator" target="_blank">Random Story Generator</a></h4>
-        <h4><a href="https://link8898.github.io/poemgenerator" target="_blank">Random Poem Generator</a></h4>
-        <h4><a href="https://link8898.github.io/numberguesser" target="_blank">Random Number Guesser</a></h4>
         <hr>
-
+        <h4>Here is an example use case of Brython:<br />
+            <a href="https://link8898.github.io/numberguesser" target="_blank">Random Number Guesser</a>
+        </h4>
+        <hr>
     </div>
 
     <div class="sideImage" id="sideImage">
