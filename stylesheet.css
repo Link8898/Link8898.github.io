@@ -1,7 +1,10 @@
 @font-face { font-family: opensans; src: url('Resources/OpenSans-Regular.ttf');}
 
 body {
-	background-color: #98A8A0;
+	background-color: #48A8A0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .mainPage {
@@ -14,7 +17,8 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	/*outline: 2px solid #555555;*/
+	outline: 2px solid #ffffff;
+	padding-top: 80px;
 
 	/* Disable text selection */
 	touch-action: manipulation;
@@ -23,4 +27,29 @@ body {
 	-moz-user-select: none; /* Old versions of Firefox */
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none; /* Chrome, Opera and Firefox */
+}
+
+.btn {
+	font-family: Roboto, sans-serif;
+	font-size: 15px;
+	color: #00bbff;
+	background-color: #8556a3;
+	padding: 10px 80px;
+	border: solid #00fff2 3px;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+	border-radius: 10px;
+	transition: 500ms;
+	transform: translateY(0);
+	text-decoration: none;
+	width: 200px;
+	display: inline-block;
+}
+
+.btn:hover {
+	transition: 150ms;
+	padding: 10px 50px;
+	transform: translateY(-0px);
+	background-color: #e9c46a;
+	color: #000000;
+	border: solid 3px #00bbff;
 }
