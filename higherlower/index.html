@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta charset="utf-8">
+    <title>Higher or Lower</title>
+    <link rel="icon" type="image/png" href="../Images/favicon.ico.png">
+</head>
+<body onload="brython()">
+    <!-- Link to Brython Script -->
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+    <!-- Access to Python Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
+    </script>
+    <div class="homeButton" id="homeButton">
+        <span><a href="https://link8898.github.io/">Home</a></span>
+    </div>
+    <div class="mainPage" id="content">
+        <h2><a id="result">Higher or Lower Game</a></h2>
+        <h2><a class="btn" id="hb">Higher</a></h2>
+        <h2><a class="btn" id="lb">Lower</a></h2>
+    </div>
+    <script type="text/python">
+        from browser import alert, document, html
+        from browser.local_storage import storage
+        import random
+
+        result = document["result"]
+
+        global hasGuessed
+        hasGuessed = False
+        starterCard = random.randrange(1,10)
+        introductionStatement = "The card I drew is a "
+        questionStatement = "Will the next card I draw be higher or lower than "
+
+        result.text = introductionStatement + str(starterCard) + ". " + questionStatement + str(starterCard) + "?"
+
+        randomCard = random.randrange(1,10)
+        if randomCard == starterCard:
+            randomCard = random.randrange(1,10)
+
+        cardValue = " "
+        if randomCard > starterCard:
+            cardValue = "higher"
+        else:
+            cardValue = "lower"
+
+        def higher(event):
+            global hasGuessed
+            if hasGuessed == False:
+                if cardValue == "higher":
+                    document <= html.AUDIO(src='../SFX/Success.mp3', autoplay=True)
+                    result.text = "I drew a " + str(randomCard) + ". " + "You Won!"
+                else:
+                    document <= html.AUDIO(src='../SFX/Failure.mp3', autoplay=True)
+                    result.text = "I drew a " + str(randomCard) + ". " + "You Lose"
+            hasGuessed = True
+
+        def lower(event):
+            global hasGuessed
+            if hasGuessed == False:
+                if cardValue == "lower":
+                    document <= html.AUDIO(src='../SFX/Success.mp3', autoplay=True)
+                    result.text = "I drew a " + str(randomCard) + ". " + "You Won!"
+                else:
+                    document <= html.AUDIO(src='../SFX/Failure.mp3', autoplay=True)
+                    result.text = "I drew a " + str(randomCard) + ". " + "You Lose"
+            hasGuessed = True
+
+        document["hb"].bind("click", higher)
+        document["lb"].bind("click", lower)
+    </script>
+</body>
+</html>

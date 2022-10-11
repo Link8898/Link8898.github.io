@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta charset="utf-8">
+    <title>Combination Lock</title>
+    <link rel="icon" type="image/png" href="../Images/favicon.ico.png">
+</head>
+<body onload="brython()">
+    <!-- Link to Brython Script -->
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+    <!-- Access to Python Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
+    </script>
+    <div class="mainPage" id="content">
+        <h2><a id="levelDisplay">Mixed Test Project</a></h2>
+
+        <h2><a class="btn" id="button1">ERROR</a></h2>
+        <h2><a class="btn" id="button2">ERROR</a></h2>
+        <h2><a class="btn" id="button3">ERROR</a></h2>
+        <h2><a class="btn" id="button4">ERROR</a></h2>
+        <hr />
+        <h2><a class="btn" id="resetButton">Reset</a></h2>
+    </div>
+    <!-- Python Script -->
+    <script type="text/python">
+        from browser import alert, document, html
+        from browser.local_storage import storage
+        import random
+
+        # User level
+        levelDisplay = document["levelDisplay"]
+        level = " "
+        global levelInt
+        levelInt = 0
+
+        # Randomized buttons
+        global buttonOrder
+        buttonOrder = random. sample(range(1, 5), 4)
+        print(buttonOrder)
+        global currentIndex
+        currentIndex = 0
+        global currentButton
+        currentButton = buttonOrder[currentIndex]
+        global completedLevel
+        completedLevel = False
+        button1 = document["button1"]
+        button2 = document["button2"]
+        button3 = document["button3"]
+        button4 = document["button4"]
+
+        # Load stored data
+        try:
+            if storage['storedLevel'] != None:
+                level = storage['storedLevel']
+                levelInt = int(level)
+                levelDisplay.text = "Round: " + level
+        except:
+            level = "1"
+            levelInt = int(level)
+            levelDisplay.text = "Round: " + level
+
+        def SaveScore():
+            global levelInt
+            levelInt += 1
+            level = str(levelInt)
+            storage['storedLevel'] = level
+            document <= html.AUDIO(src='../SFX/LevelComplete.mp3', autoplay=True)
+
+        def ResetScore(event):
+            del storage['storedLevel']
+
+        def Failed():
+            document <= html.AUDIO(src='../SFX/ErrorBeep.mp3', autoplay=True)
+            global currentIndex
+            global currentButton
+            currentIndex = 0
+            currentButton = buttonOrder[currentIndex]
+            document["button1"].text = "ERROR"
+            document["button2"].text = "ERROR"
+            document["button3"].text = "ERROR"
+            document["button4"].text = "ERROR"
+
+        def OnePressed(event):
+            global completedLevel
+            if completedLevel == False:
+                global currentButton
+                if currentButton == 1:
+                    document <= html.AUDIO(src='../SFX/CorrectBeep.mp3', autoplay=True)
+                    document["button1"].text = "CLEAR"
+                    global currentIndex
+                    global buttonOrder
+                    if currentIndex < len(buttonOrder) - 1:
+                        currentIndex += 1
+                        currentButton = buttonOrder[currentIndex]
+                    else:
+                        # You Win!
+                        completedLevel = True
+                        SaveScore()
+                else:
+                    Failed()
+        def TwoPressed(event):
+            global completedLevel
+            if completedLevel == False:
+                global currentButton
+                if currentButton == 2:
+                    document <= html.AUDIO(src='../SFX/CorrectBeep.mp3', autoplay=True)
+                    document["button2"].text = "CLEAR"
+                    global currentIndex
+                    global buttonOrder
+                    if currentIndex < len(buttonOrder) - 1:
+                        currentIndex += 1
+                        currentButton = buttonOrder[currentIndex]
+                    else:
+                        # You Win!
+                        completedLevel = True
+                        SaveScore()
+                else:
+                    Failed()
+        def ThreePressed(event):
+            global completedLevel
+            if completedLevel == False:
+                global currentButton
+                if currentButton == 3:
+                    document <= html.AUDIO(src='../SFX/CorrectBeep.mp3', autoplay=True)
+                    document["button3"].text = "CLEAR"
+                    global currentIndex
+                    global buttonOrder
+                    if currentIndex < len(buttonOrder) - 1:
+                        currentIndex += 1
+                        currentButton = buttonOrder[currentIndex]
+                    else:
+                        # You Win!
+                        completedLevel = True
+                        SaveScore()
+                else:
+                    Failed()
+        def FourPressed(event):
+            global completedLevel
+            if completedLevel == False:
+                global currentButton
+                if currentButton == 4:
+                    document <= html.AUDIO(src='../SFX/CorrectBeep.mp3', autoplay=True)
+                    document["button4"].text = "CLEAR"
+                    global currentIndex
+                    global buttonOrder
+                    if currentIndex < len(buttonOrder) - 1:
+                        currentIndex += 1
+                        currentButton = buttonOrder[currentIndex]
+                    else:
+                        # You Win!
+                        completedLevel = True
+                        SaveScore()
+                else:
+                    Failed()
+
+
+        # Test Button
+        document["button1"].bind("click", OnePressed)
+        document["button2"].bind("click", TwoPressed)
+        document["button3"].bind("click", ThreePressed)
+        document["button4"].bind("click", FourPressed)
+        document["resetButton"].bind("click", ResetScore)
+    </script>
+</body>
+</html>
