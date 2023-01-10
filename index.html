@@ -1,30 +1,207 @@
 ﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="stylesheet.css">
     <title>WIP Portfolio</title>
-    <link rel="icon" type="image/png" href="Images/favicon.ico.png">
+    <link rel="icon" type="image/png" href="Images/favicon.png">
 </head>
 <body>
-    <div class="mainPage" id="content">
-        <h1>WIP Portfolio</h1>
-        <h3>This page is still under construction</h3>
-        <hr>
-
-        <h4>Page links</h4>
-        <h2><a href="https://link8898.github.io" class="btn">Portfolio Home Page</a></h2>
-        <h2><a href="https://link8898.github.io/storygenerator" class="btn">Story Generator</a></h2>
-        <h2><a href="https://link8898.github.io/poemgenerator" class="btn">Poem Generator</a></h2>
-        <h2><a href="https://link8898.github.io/numberguesser" class="btn">Number Guesser</a></h2>
-        <h2><a href="https://github.com/Link8898" class="btn">GitHub Profile</a></h2>
-
-        <hr>
-        <h4>Visit my <a href="https://github.com/Link8898/Link8898.github.io">repository</a> to view the project files.</h4>
-        <hr>
-        <h2><a href="https://link8898.github.io/secret" class="btn">Secret Page</a></h2>
+    <!-- Header -->
+    <div class="header" id="header">
+        <img src="Images/banner.png" alt="Banner Image">
     </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <img src="Images/menuImg.png" alt="Menu Icon" style="width:35px;height:35px;margin-left:20px;" onclick="slideNav()">
+        <br />
+        <a href="#aboutMe"><img src="Images/breakinImg.png" alt="Breakin Icon" title="About Me"></a>
+        <h4 id="aboutTitle">About Me</h4>
+        <br />
+        <a href="#vrDev"><img src="Images/vrImg.png" alt="VR Icon" title="VR Development"></a>
+        <h4 id="vrTitle">Virtual Reality</h4>
+        <br />
+        <a href="#flatscreenDev"><img src="Images/flatscreenImg.png" alt="Flatscreen Icon" title="Flatscreen Development"></a>
+        <h4 id="flatscreenTitle">Flatscreen</h4>
+        <br />
+        <a href="#modeling"><img src="Images/modelingImg.png" alt="Modeling Icon" title="3D Modeling"></a>
+        <h4 id="modelingTitle">3D Modeling</h4>
+        <br />
+        <a href="#music"><img src="Images/musicImg.png" alt="Music Icon" title="Music"></a>
+        <h4 id="musicTitle">Music</h4>
+    </div>
+
+    <!-- Main Page -->
+    <div class="mainPage" id="mainPage">
+        <div class="section" id="aboutMe">
+            <hr>
+            <h1>About Me</h1>
+            <hr>
+            <a href="Images/AboutMeImage.jpg" target="_blank"><img style="width: 250px" src="Images/AboutMeImage.jpg" alt="About Me Image" class="scalableImage"></a>
+            <h3>
+                Hi, I’m Noah, and I’m a computer programmer.
+                Originally, I was fascinated by the graphics and art within digital entertainment and the storylines
+                for well designed games. My programming journey began online, leveraging just about every
+                type of resource available, including community forums for problem solving and brainstorming.
+                I am interested in a career as a professional software engineer and have been learning languages,
+                specific applications and other supportive skills to code games in my free time. I began with
+                simple games but continue to learn more to increase the depth and complexity of my projects.
+                I really enjoy virtual and augmented reality technology and the endless opportunities for their
+                application in entertainment and within the workforce. Starting from scratch and developing
+                every piece of a project from start to finish is very motivating to me, despite the time
+                commitment and work it takes. I’m extremely self-motivated and see no end in sight to the
+                possibilities within this field. When I’m not working on a project, I enjoy reading, working out, or
+                experimenting a little on my keyboard. If I’ve got some time to get away, my choice is always snowboarding.
+            </h3>
+            <a href="https://github.com/Link8898" target="_blank" class="btn">Github Profile</a>
+        </div>
+        <div class="section" id="vrDev">
+            <hr>
+            <h1>VR Development</h1>
+            <hr>
+            <h2>XR Room Creator</h2>
+            <a href="Images/XRCreatorImage.jpg" target="_blank"><img style="width: 250px" src="Images/XRCreatorImage.jpg" alt="XR Creator Image" class="scalableImage"></a>
+            <h3>
+                <i>XR Room Creator</i> is a personal project I created to explore the advancements in
+                virtual and augmented reality technologies. Throughout the time I’ve spent working on this project I’ve learned
+                about and implemented my own techniques for mesh generation, object occlusion in augmented reality,
+                saving and loading data, as well as a bunch of VR and AR specific features. I plan to upload the files
+                to a public project hosted on GitHub for anyone to download and learn from. The project is
+                designed to allow users to recreate their physical environment in a virtual world.
+                This allows players to interact with virtual items in their room, while also having the virtual items interact
+                with virtual items in their room, while also having the virtual items interact with their physical environment.
+                I plan to continue working on this project until I have a full release ready for download.
+            </h3>
+            <h2>Motel Detective</h2>
+            <a href="Images/MotelImage.png" target="_blank"><img style="width: 250px" src="Images/MotelImage.png" alt="Motel Image" class="scalableImage"></a>
+            <h3>
+                <i>Motel Detective</i> was a project I created for the 2022 VR Game Jam.
+                The theme for this game jam was “One-Time Use” and I had 9 days to submit a game.
+                I spent an entire day coming up with a concept for my submission and eventually
+                stuck with one that I felt fit the theme the greatest. In <i>Motel Detective</i> you play as a detective
+                with the goal to stop an untrustworthy citizen standing right outside the motel you are staying in.
+                As the detective you have a rifle with you, but you only have one shot to take out the untrustworthy citizen.
+                I made sure the game was based entirely around this concept of only being able to use your rifle once
+                because it fit the theme for this game jam really well.
+            </h3>
+            <a href="https://linkyboy.itch.io/motel-massacre" target="_blank" class="btn">Download Page</a>
+            <h2>The VR Test</h2>
+            <h3>
+                <i>The VR Test</i> was a project I created to explore game development for virtual reality
+                and document all of my findings. I spent over a year learning the similarities and differences between
+                creating a VR application and creating a flatscreen application.
+                I quickly realized VR was my bigger passion and continued to learn more about that field.
+            </h3>
+        </div>
+        <div class="section" id="flatscreenDev">
+            <hr>
+            <h1>Flatscreen Development</h1>
+            <hr>
+            <h2>Friendly Cubes</h2>
+            <a href="Images/FriendlyCubesImage.png" target="_blank"><img style="width: 150px" src="Images/FriendlyCubesImage.png" alt="Friendly Cubes Image" class="scalableImage"></a>
+            <h3>
+                <i>Friendly Cubes</i> was a project I created for the 2021.1 Brackeys Game Jam.
+                The theme for this game jam was “Stronger Together” and I had one week to submit a game.
+                For this game jam, I wrote down a list of different game concepts and picked the one I felt was the strongest.
+                The main mechanic for my game was the ability for the player to collect cube companions and solve puzzles.
+                The puzzles are unsolvable alone and focus on strength in numbers,
+                so the player must collect as many cubes as possible to beat the game.
+            </h3>
+            <a href="https://linkyboy.itch.io/friendly-cubes" target="_blank" class="btn">Download Page</a>
+            <h2>One Wacky Dream</h2>
+            <a href="Images/WackyDreamImage.png" target="_blank"><img style="width: 150px" src="Images/WackyDreamImage.png" alt="One Wacky Dream Image" class="scalableImage"></a>
+            <h3>
+                <i>One Wacky Dream</i> was a project I created for the 2022.1 Brackeys Game Jam.
+                The theme for this game jam was “It Is Not Real” and I had one week to submit a game.
+                I wasn’t able to work on my submission for three of the seven days, so I had to quickly come up with a game idea.
+                I decided to focus my project around a dream because dreams aren’t reality.
+                I couldn’t come up with a story and or level sequence in time, so I made the game endless
+                with procedurally generated rooms that the player had to traverse through.
+            </h3>
+            <a href="https://linkyboy.itch.io/one-wacky-dream" target="_blank" class="btn">Download Page</a>
+            <h2>Web Projects</h2>
+            <h3>
+                While learning the basics of HTML, CSS, and Python, I created some basic web pages to test my knowledge.
+                For this site I created a 
+                <a href="https://link8898.github.io/storygenerator" target="_blank">Story Generator</a>, 
+                <a href="https://link8898.github.io/poemgenerator" target="_blank">Poem Generator</a>, 
+                <a href="https://link8898.github.io/numberguesser" target="_blank">Number Guesser</a>, 
+                <a href="https://link8898.github.io/higherlower" target="_blank">Higher or Lower Game</a>, and a
+                <a href="https://link8898.github.io/combinationlock" target="_blank">Combination Lock Game</a>.
+            </h3>
+        </div>
+        <div class="section" id="modeling">
+            <hr>
+            <h1>3D Modeling</h1>
+            <hr>
+            <h3>
+                Over the years I have learned all about 3D modeling and made many of my own models using Blender.
+                I took an online course that taught me more about Blender and bringing my models over into Unity.
+                The models I made had a very low polygon count when I first started using them in my own projects,
+                but I eventually honed my skills and began making models that were up to my satisfaction.
+                Here are a couple of renders I made when I first started learning.
+            </h3>
+            <video width="400" autoplay muted loop style="border-radius: 20px;" id="render1"><source src="Videos/CompCubeSim.mp4" type="video/mp4"></video>
+            <video width="400" autoplay muted loop style="border-radius: 20px;" id="render2"><source src="Videos/AlienMechSpin.mp4" type="video/mp4"></video>
+        </div>
+        <div class="section" id="music">
+            <hr>
+            <h1>Music</h1>
+            <hr>
+            <h3>
+                When working on my own projects I like to create my own music for them.
+                I have been playing the piano for years now and usually write up a simple melody for my games.
+                I like to make my music repetitive, simple, and catchy for game jam competitions
+                because it adds a needed ambience to the simple environments within the game.
+                Here are a few simple tunes that I created for game jams in the past.
+            </h3>
+            <audio controls><source src="SFX/PuzzleMusic.wav" type="audio/wav"></audio>
+            <audio controls><source src="SFX/VaultSong.wav" type="audio/wav"></audio>
+            <audio controls><source src="SFX/DetectiveSong.wav" type="audio/wav"></audio>
+        </div>
+    </div>
+
+    <script>
+        // Sliding the sidebar
+        function slideNav() {
+            if (document.getElementById("sidebar").style.width == "200px") {
+                document.getElementById("sidebar").style.width = "70px";
+                document.getElementById("header").style.marginLeft = "70px";
+                document.getElementById("mainPage").style.marginLeft = "70px";
+
+                const labels = document.querySelectorAll('.sidebar h4');
+                labels.forEach(label => {
+                    label.style.marginRight = "-200px";
+                });
+            }
+            else {
+                document.getElementById("sidebar").style.width = "200px";
+                document.getElementById("header").style.marginLeft = "200px";
+                document.getElementById("mainPage").style.marginLeft = "200px";
+
+                const labels = document.querySelectorAll('.sidebar h4');
+                labels.forEach(label => {
+                    label.style.marginRight = "10px";
+                });
+            }
+        }
+
+        // Display on mobile devices
+        if (screen.width < 800) {
+            document.getElementById("sidebar").style.display = "none";
+            document.getElementById("header").style.marginLeft = "0px";
+            document.getElementById("mainPage").style.marginLeft = "0px";
+
+            var images = document.getElementsByClassName("scalableImage");
+            for (i = 0; i < images.length; i++) {
+                images[i].style.width = "100%";
+            }
+
+            document.getElementById("render1").setAttribute("controls", "controls");
+            document.getElementById("render2").setAttribute("controls", "controls");
+        }
+    </script>
 </body>
 </html>
