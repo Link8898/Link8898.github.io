@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xenophobia Please</title>
+    <style>
+        * {
+            /* CSS Variables */
+            --backgroundColor: rgb(0, 0, 0);
+            --borderColor: rgb(255 148 70);
+            --fontColor: rgb(255, 255, 255);
+            --panelColor: rgb(50, 50, 50);
+            --deskColor: rgb(128, 128, 128);
+            --viewColor: rgb(40, 50, 40);
+
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            justify-content: center;
+            font-family: Courier New, Courier, monospace;
+            color: var(--fontColor);
+            overflow: hidden;
+        }
+
+        body {
+            background-color: var(--backgroundColor);
+            background-size: 100% 100%;
+            width: 100dvw;
+            height: 100dvh;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .menu {
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100dvw;
+            height: 100dvh;
+            background-color: rgb(0, 0, 0);
+            opacity: 100%;
+            z-index: 2;
+            transition: 1s ease-in-out;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #view {
+            display: flex;
+            flex-direction: row;
+            background-color: var(--viewColor);
+            background-image: url('Backdrop.jpg');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            width: 100dvw;
+            height: 60dvh;
+        }
+
+        .panel {
+            width: 25dvw;
+            padding-top: 6%;
+            padding-left: 4%;
+            padding-right: 4%;
+            background-color: var(--panelColor);
+            background-image: url('Panel.jpg');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            z-index: 1;
+        }
+
+        #window {
+            display: flex;
+            width: 50dvw;
+            justify-content: center;
+            align-items: center;
+            border-left: 2px solid var(--borderColor);
+            border-right: 2px solid var(--borderColor);
+        }
+
+        #immigrant {
+            position: absolute;
+            background-image: url('Face1.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            width: 36%;
+            height: 60%;
+            right: -100dvw;
+            transition: 1s ease-in-out;
+            z-index: 0;
+        }
+        
+        #desk {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background-color: var(--deskColor);
+            background-image: url("Desk.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            width: 100dvw;
+            height: 40dvh;
+            gap: 20%;
+            border-top: 2px solid var(--borderColor);
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            width: 20dvw;
+            height: 50%;
+            font-size: 2dvw;
+            color: white;
+            border: solid gray 3px;
+            background-color: darkred;
+            font-family: Roboto, sans-serif;
+            box-shadow: rgba(0, 0, 0, 0.5) 0px 15px 10px;
+            border-radius: 25px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 200ms;
+        }
+
+        .button:hover {
+            transition: 100ms;
+            background-color: red;
+            color: black;
+            border: solid 3px gray;
+        }
+    </style>
+</head>
+<body>
+    <div id="intro" class="menu">
+        <h1>Welcome to United States Department of Homeland Security</h1><br>
+        <p>U.S. Citizenship and Immigration Services needs YOU to decide if these individuals get to experience the American Dream</p><br>
+        <p>Press the ACCEPT button to allow the individual into our great nation. Press the DENY button to disapprove of their request</p><br><br>
+        <p>Click anywhere on the screen to begin your duties</p>
+    </div>
+    <div id="container">
+        <div id="view">
+            <div id="info" class="panel">- Immigrant Info -</div>
+            <div id="window">
+                <div id="immigrant"></div>
+            </div>
+            <div id="retrospect" class="panel">- Further Analyzed Data -</div>
+        </div>
+        <div id="desk">
+            <div id="deny" class="button">DENY</div>
+            <div id="accept" class="button">ACCEPT</div>
+        </div>
+    </div>
+    <div id="outro" class="menu" style="display: none; opacity: 0;">
+        <h1>Thank You For Your Services</h1><br>
+    </div>
+
+    <script type="text/javascript">
+        // Immigrant Stats
+        let names = ["Albert Einstein", "Elon Musk", "Sergey Brin", "Gloria Estefan", "Mikhail Baryshnikov", "Alexander Bell", "Mohamed Atta", "Faisal Shahzad", "Yaser Said", "Aafia Siddiqui"];
+        let ages = [54, 18, 6, 2, 26, 24, 32, 21, 26, 18];
+        let countries = ["Germany", "South Africa", "Russia", "Cuba", "Russia", "Scotland", "Egypt", "Pakistan", "Egypt", "Pakistan"];
+        let reason = [
+            "Fleeing Nazi Germany after an onset persecution of German Jews, as this person is Jewish.",
+            "Seeking greater economic opportunities in America that aren't offered at elsewhere.",
+            "Fleeing the USSR due to rising anti-Semitism. In search of a better life with new opportunities.",
+            "Fleeing in response to the Cuban Revolution in order to escape from Fidel Castro's rise to power.",
+            "Desires to escape from the Soviet Union in search of artistic and personal freedom in the West.",
+            "Wishes to take up a position as a teacher of visible speech at the Boston School for Deaf Mutes.",
+            "Desires to enroll in a professional pilot school on a student visa to become a world renowned pilot.",
+            "Wishes to pursue their education at better university to become a skilled worker in computer systems.",
+            "Looking to pursue academic freedom on a student visa where opportunities are less limiting than Egypt.",
+            "Desires to study biology, anthropology, and archaeology at a prestigious school and join their sibling in the US."
+        ];
+        let statement = [
+            "Einstein immigrated to the United States in October, 1933. He went on to become a Professor of Theoretical Physics at Princeton University.",
+            "Elon Musk founded SpaceX, a company primarily focused on creating rockets and spacecrafts. He cofounded Neuralink in 2016 and is pioneering technological innovation to this day.",
+            "Sergey Brin cofounded Google, one of the most successful sites on the Internet that America relies on heavily to this day.",
+            "Gloria Estefan is known as the 'Queen of Latin Pop', becoming a seven-time Grammy Award-winning singer and making Miami the popular music capital of Latin America.",
+            "Mikhail Baryshnikov joined the American Ballet Theatre in 1974, winning an Oscar nomination and promoting the future of dance in the United States.",
+            "Alexander Bell developed visible speech as a method of communication for deaf people and connected America with his invention of the telephone.",
+            "Mohamed Atta was the apparent ringleader of the planned al-Qaeda attack on New York City on September 11, 2001.",
+            "Faisal Shahzad was sentenced to life in federal prison for the attempted May 1, 2010, Times Square car bombing incident.",
+            "Yaser Said was sentenced to life in prison after luring his own daughters into a cab and shooting them in the town of Justin, Texas.",
+            "Aafia Siddiqui was sentenced to 86 years in prison for attempting to kill a United States army captain and planning a suicide attack."
+        ];
+        let immigrant = { name: " ", age: 0, country: " ", reason: " ", statement: " " };
+        let immigrantIndex = Random(0, 7);
+        let indexList = [];
+
+        // Player Stats
+        let denied = 0;
+        let accepted = 0;
+
+        // Experience
+        let started = false;
+        let clickable = true;
+        let info = document.getElementById("info");
+        let retrospect = document.getElementById("retrospect");
+
+        function StartGame() { // Start the game
+            document.getElementById("intro").style.opacity = 0;
+            setTimeout(function () { document.getElementById("intro").style.display = "none"; }, 1200);
+            NextImmigrant();
+        }
+
+        function GenerateImmigrant() { // Randomly generate an immigrant
+            immigrant.name = names[immigrantIndex];
+            immigrant.age = ages[immigrantIndex];
+            immigrant.country = countries[immigrantIndex];
+            immigrant.reason = reason[immigrantIndex];
+            immigrant.statement = statement[immigrantIndex];
+
+            info.innerHTML = "- Immigrant Info -" + "<br><br>";
+            info.innerHTML += "Current Age: " + immigrant.age + "<br><br>";
+            info.innerHTML += "Country of Origin: " + immigrant.country + "<br><br>";
+            info.innerHTML += "Reason for Arrival: " + immigrant.reason;
+            document.getElementById("immigrant").style.backgroundImage = "url('Face" + Random(1, 10) + ".png')";
+        }
+
+        function Accept() {
+            document.getElementById("immigrant").style.backgroundImage = "url('" + immigrant.name + ".png')";
+            setTimeout(function () { NextImmigrant(); }, 4000);
+            accepted += 1;
+            retrospect.innerHTML = "- Further Analyzed Data -" + "<br><br>";
+            retrospect.innerHTML += "Name: " + immigrant.name + "<br><br>";
+            retrospect.innerHTML += "Current Age: " + immigrant.age + "<br><br>";
+            retrospect.innerHTML += "Country of Origin: " + immigrant.country + "<br><br>";
+            retrospect.innerHTML += "Statement: " + immigrant.statement;
+            // SFX
+        }
+
+        function Deny() {
+            document.getElementById("immigrant").style.backgroundImage = "url('" + immigrant.name + ".png')";
+            denied += 1;
+            setTimeout(function () { NextImmigrant(); }, 2000);
+            retrospect.innerHTML = "- Further Analyzed Data -" + "<br><br>";
+            retrospect.innerHTML += "Name: " + immigrant.name + "<br><br>";
+            retrospect.innerHTML += "Current Age: " + immigrant.age + "<br><br>";
+            retrospect.innerHTML += "Country of Origin: " + immigrant.country + "<br><br>";
+            retrospect.innerHTML += "Statement: " + immigrant.statement;
+            // SFX
+        }
+
+        function NextImmigrant() {
+            document.getElementById("immigrant").style.right = "-50dvw";
+            document.getElementById("immigrant").style.backgroundImage = "url('Face" + Random(1, 10) + ".png')";
+            function SlideImmigrant() {
+                document.getElementById("immigrant").style.transition = "1s ease-in-out";
+                document.getElementById("immigrant").style.right = "33dvw";
+                clickable = true;
+            }
+            function ResetImmigrant() {
+                document.getElementById("immigrant").style.transition = "none";
+                document.getElementById("immigrant").style.right = "100dvw";
+                setTimeout(function () { GenerateImmigrant(); SlideImmigrant(); }, 10);
+            }
+            if (indexList.length != names.length) { // Game isn't over
+                while (indexList.includes(immigrantIndex)) { immigrantIndex = Random(0, names.length)}
+                indexList.push(immigrantIndex);
+                setTimeout(function () { ResetImmigrant(); }, 1200);
+            }
+            else { // Game is over
+                document.getElementById("outro").style.display = "flex";
+                document.getElementById("outro").innerHTML += "Individuals Accepted: " + accepted + "<br><br>";
+                document.getElementById("outro").innerHTML += "Individuals Denied: " + denied;
+                function EndGame() {
+                    document.getElementById("outro").style.opacity = "100%";
+                }
+                setTimeout(function () { EndGame(); }, 2000);
+            }
+        }
+
+        document.getElementById("deny").addEventListener("click", () => { // Deny Click
+            if (clickable) {
+                clickable = false;
+                console.log("DENIED");
+                Deny();
+            }
+        });
+
+        document.getElementById("accept").addEventListener("click", () => { // Accept Click
+            if (clickable) {
+                clickable = false;
+                console.log("ACCEPTED");
+                Accept();
+            }
+        });
+
+        window.addEventListener("click", () => {
+            if (!started) {
+                started = true;
+                StartGame();
+            }
+        });
+
+        function Random(min, max) { // Inclusive, exclusive
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+    </script>
+</body>
+</html>
