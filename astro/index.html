@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro Final</title>
+    <style type="text/css">
+        * {
+            --backgroundColor: rgb(80, 80, 80);
+            --borderColor: rgb(0, 255, 180);
+            --fontColor: rgb(0, 0, 0);
+            --windowColor: rgb(42, 75, 87);
+            --componentColor: rgb(255 148 70);
+            --terminalColor: rgb(25, 45, 50);
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            justify-content: center;
+            font-family: Courier New, Courier, monospace;
+            color: var(--fontColor);
+            overflow: hidden;
+        }
+
+        body {
+            width: 100dvw;
+            height: 100dvh;
+            display: flex;
+            flex-direction: row;
+        }
+
+        #canvas {
+            position: fixed;
+            width: 100dvw;
+            height: 100dvh;
+            background-color: black;
+            background-image: url("Space.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            border: 1px solid var(--borderColor);
+        }
+    </style>
+</head>
+<body>
+    <!-- Simulation Window -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Frontend script -->
+    <script type="text/javascript">
+
+        // Simulation Window and Logic
+        let canvas;
+        let logic;
+
+        // Unit Scalers
+        let resolutionScaler = 1;
+        let coordinateScaler = 5;
+        let massScaler = (10 ** -11);
+
+        // Flags
+        let paused = false;
+        let gridlines = false;
+        let names = false;
+        let clearing = true;
+        let drawing = false;
+        let tracker = -1;
+
+        function init() { // Called once all files are received by the client
+            // Initialize canvas resolution
+            canvas = document.getElementById("canvas");
+            canvas.width = document.body.clientWidth * resolutionScaler;
+            canvas.height = document.body.clientHeight * resolutionScaler;
+            canvas.getContext("2d", { willReadFrequently: true })
+
+            logic = new Logic([canvas.width, canvas.height]);
+
+            // CUSTOM PLANETS GO HERE
+
+            let sun = new Entity(200, new Vector(), "SUN");
+            sun.color = [255, 255, 0];
+            sun.mass = 10000 / massScaler;
+            logic.entities.push(sun);
+            
+            let earth = new Entity(50, new Vector(-2000, 0), "EARTH");
+            earth.color = [0, 255, 0];
+            earth.mass = 162 / massScaler;
+            earth.impulse(new Vector(0, earth.mass * 5.875));
+            logic.entities.push(earth);
+            
+            let moon = new Entity(20, new Vector(-2100, 0), "MOON");
+            moon.color = [100, 100, 100];
+            moon.mass = 2 / massScaler;
+            moon.velocity.y += earth.velocity.y;
+            moon.impulse(new Vector(0, moon.mass * 3.3));
+            logic.entities.push(moon);
+
+            let mars = new Entity(50, new Vector(2500, 0), "MARS");
+            mars.color = [255, 150, 0];
+            mars.mass = 162 / massScaler;
+            mars.impulse(new Vector(0, mars.mass * -5));
+            logic.entities.push(mars);
+
+            // CUSTOM PLANETS STOP HERE
+
+            RenderFrame(); // Render frame 1
+        }
+
+        function SimulationMode() { // Begin simulation
+            if (!logic.running) {
+                console.log("Starting Simulation");
+                logic.Simulate(); // Begin simulation in logic
+            }
+            else { // End simulation
+                console.log("Ending Simulation");
+                logic.Quit(); // Quit simulation in logic
+            }
+        }
+
+        function RenderFrame(timestamp) { // Draw everything in the simulation and runs update loop
+            if (!paused) { logic.Update(timestamp); } // Run the next update loop
+            let ctx = canvas.getContext("2d");
+            if (clearing) { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+            // Set camera position according to tracked object
+            if (tracker != -1) {
+                tracked = logic.entities[tracker];
+                logic.camera.position = tracked.position.divide(coordinateScaler);
+            }
+
+            if (gridlines) { // Draw gridlines
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+                ctx.lineWidth = 2;
+                ctx.setLineDash([10])
+                ctx.beginPath(); // Draw horizontal grid
+                ctx.moveTo(0, -(logic.camera.position.y - logic.camera.resolution.y / 2));
+                ctx.lineTo(canvas.width, -(logic.camera.position.y - logic.camera.resolution.y / 2));
+                ctx.stroke();
+                ctx.beginPath(); // Draw vertical grid
+                ctx.moveTo(-(logic.camera.position.x - logic.camera.resolution.x / 2), 0);
+                ctx.lineTo(-(logic.camera.position.x - logic.camera.resolution.x / 2), canvas.height);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            for (let entity of logic.entities) { // Draw each entity
+                let x = entity.position.x / coordinateScaler - (logic.camera.position.x - logic.camera.resolution.x / 2);
+                let y = entity.position.y / coordinateScaler - (logic.camera.position.y - logic.camera.resolution.y / 2)
+                let color = entity.color;
+                ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(x, y, entity.radius / coordinateScaler, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)";
+                ctx.stroke();
+                ctx.fill();
+                if (names) { // Draw name on top
+                    ctx.font = String(entity.radius / 2 / coordinateScaler) + "px arial";
+                    ctx.fillStyle = "rgb(0, 0, 0)";
+                    ctx.strokeStyle = "rgb(255, 255, 255)";
+                    ctx.textAlign = "center";
+                    ctx.strokeText(entity.name, x, y);
+                    ctx.fillText(entity.name, x, y);
+                }
+            }
+
+            // Draw statistics
+            ctx.font = "20px arial";
+            ctx.fillStyle = "rgb(255, 255, 255)";
+            ctx.strokeStyle = "rgb(0, 0, 0)";
+            ctx.textAlign = "left";
+            ctx.strokeText("Viewport: (" + logic.camera.position.x + ", " + logic.camera.position.y + ")", 10, canvas.height - 40);
+            ctx.fillText("Viewport: (" + logic.camera.position.x + ", " + logic.camera.position.y + ")", 10, canvas.height - 40);
+            ctx.strokeText("Coordinate Scaler: (" + coordinateScaler + ")", 10, canvas.height - 10);
+            ctx.fillText("Coordinate Scaler: (" + coordinateScaler + ")", 10, canvas.height - 10);
+
+            if (logic.running && !paused) { ctx.fillStyle = "rgb(0, 255, 0)"; }
+            else if (logic.running && paused) { ctx.fillStyle = "rgb(255, 255, 0)"; }
+            else { ctx.fillStyle = "rgb(255, 0, 0)"; }
+            ctx.font = "35px arial";
+            ctx.textAlign = "right";
+            ctx.strokeText("SIM", canvas.width - 20, canvas.height - 20);
+            ctx.fillText("SIM", canvas.width - 20, canvas.height - 20);
+
+            window.requestAnimationFrame(RenderFrame);
+        }
+
+        onmousemove = function (event) { // Mouse movement
+            logic.UpdateMouse(event.clientX, event.clientY);
+            if (drawing) { logic.CreateEntity(20, new Vector(logic.mouseX * coordinateScaler, logic.mouseY * coordinateScaler)); }
+        };
+        document.getElementById("canvas").onmouseup = (event) => { // Left click up
+            logic.UpdateMouse(event.clientX, event.clientY);
+            logic.HandleClick();
+        };
+        document.getElementById("canvas").addEventListener("contextmenu", (event) => { // Right click down
+            event.preventDefault();
+            let entity = new Entity(Random(30, 80), new Vector(logic.mouseX * coordinateScaler, logic.mouseY * coordinateScaler), " ");
+            entity.color = [Random(0, 255), Random(0, 255), Random(0, 255)];
+            entity.mass = entity.radius / massScaler;
+            entity.impulse(new Vector(entity.mass * Random(-10, 10), entity.mass * Random(-10, 10)));
+            logic.entities.push(entity);
+        });
+
+        // Viewport traversal inputs
+        let lArrow = false; let rArrow = false; let uArrow = false; let dArrow = false; let shifting = false;
+        window.addEventListener("keydown", (event) => {
+            if (event.code == "KeyE") {
+                SimulationMode();
+            }
+            if (event.code == "KeyP") {
+                paused = !paused;
+            }
+            if (event.code == "KeyG") {
+                gridlines = !gridlines;
+            }
+            if (event.code == "KeyN") {
+                names = !names;
+            }
+            if (event.code == "KeyC") {
+                clearing = !clearing;
+            }
+            if (event.code == "KeyI") {
+                drawing = !drawing;
+            }
+            if (event.code == "KeyT") {
+                tracker += 1;
+                if (tracker >= logic.entities.length) {
+                    tracker = -1;
+                }
+            }
+
+            // Tracker controller
+            if (event.code == "KeyW") {
+                if (tracker >= 0) {
+                    logic.entities[tracker].impulse(new Vector(0, -logic.entities[tracker].mass * 2));
+                }
+            }
+            if (event.code == "KeyA") {
+                if (tracker >= 0) {
+                    logic.entities[tracker].impulse(new Vector(-logic.entities[tracker].mass * 2, 0));
+                }
+            }
+            if (event.code == "KeyS") {
+                if (tracker >= 0) {
+                    logic.entities[tracker].impulse(new Vector(0, logic.entities[tracker].mass * 2));
+                }
+            }
+            if (event.code == "KeyD") {
+                if (tracker >= 0) {
+                    logic.entities[tracker].impulse(new Vector(logic.entities[tracker].mass * 2, 0));
+                }
+            }
+
+            if (event.code == "ArrowLeft" && !lArrow) { lArrow = true; ShiftViewport(); }
+            if (event.code == "ArrowRight" && !rArrow) { rArrow = true; ShiftViewport(); }
+            if (event.code == "ArrowUp" && !uArrow) { uArrow = true; ShiftViewport(); }
+            if (event.code == "ArrowDown" && !dArrow) { dArrow = true; ShiftViewport(); }
+        });
+        window.addEventListener("keyup", function (event) { // Key up
+            if (event.code == "ArrowLeft") { lArrow = false; }
+            if (event.code == "ArrowRight") { rArrow = false; }
+            if (event.code == "ArrowUp") { uArrow = false; }
+            if (event.code == "ArrowDown") { dArrow = false; }
+        });
+
+        // Scrollwheel
+        window.addEventListener("wheel", event => {
+            const delta = Math.sign(event.deltaY);
+            if (delta > 0) { coordinateScaler += 1; }
+            else if (coordinateScaler > 1) { coordinateScaler -= 1; }
+            else { coordinateScaler = 1; }
+        });
+
+        function ShiftViewport() { // Traversing the universe
+            if (!shifting) {
+                shifting = true;
+                if (lArrow) { logic.camera.position.x -= 5; }
+                if (rArrow) { logic.camera.position.x += 5; }
+                if (uArrow) { logic.camera.position.y -= 5; }
+                if (dArrow) { logic.camera.position.y += 5; }
+                if (lArrow || rArrow || uArrow || dArrow) { setTimeout(function () { shifting = false; ShiftViewport(); }, 0); }
+                else { shifting = false; }
+            }
+        }
+
+        function Random(min, max) { // Inclusive, exclusive
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+
+        window.onload = init;
+    </script>
+
+    <!-- Logic script -->
+    <script type="text/javascript">
+        class Logic {
+            // Scene collection
+            #entities = [];
+            #sceneEntities = [];
+
+            // Simulation State
+            #timestep = 16;
+            #lastUpdate = 0;
+            #updatesPerFrame = 1;
+            #running = false;
+
+            // Mouse interaction
+            #mouseX;
+            #mouseY;
+
+            // Camera
+            #camera;
+
+            // Physics
+            #gravityConstant = 0.0000000000674;
+
+            constructor(resolution) { // Set camera properties
+                this.#camera = new Camera([0, 0], resolution);
+            }
+
+            Update(timestamp) {
+                if (timestamp - this.#lastUpdate < this.#timestep) { return; } // Early exit
+                this.#lastUpdate = timestamp;
+
+                if (!this.#running) { return; } // Early exit
+                for (let count = 0; count < this.#updatesPerFrame; count++) {
+                    for (let entity of this.#entities) {
+                        entity.relocate(); // Update position of entity
+                        for (let index = this.#entities.indexOf(entity); index < this.#entities.length; index++) {
+                            if (this.#entities[index] != entity) {
+
+                                // Localize the two objects
+                                let object1 = entity;
+                                let object2 = this.#entities[index];
+
+                                // Find distance between the two objects
+                                let distance = object1.position.distance(object2.position);
+
+                                // Use a reduced mass if the objects overlap (reduced = mass * distance^3 / radius^3)
+                                let mass1 = object1.mass;
+                                if (distance < object1.radius) { mass1 = mass1 * (distance ** 3) / (object1.radius ** 3); }
+                                let mass2 = object2.mass;
+                                if (distance < object2.radius) { mass2 = mass2 * (distance ** 3) / (object2.radius ** 3); }
+
+                                // Apply gravitational force (G * (m1 * m2) / r^2)
+                                let force = this.#gravityConstant * (mass1 * mass2) / (distance ** 2);
+
+                                // Apply forces to the two objects
+                                object1.impulse(object2.position.subtract(object1.position).divide(distance).multiply(force));
+                                object2.impulse(object1.position.subtract(object2.position).divide(distance).multiply(force));
+                            }
+                        }
+                    }
+                }
+            }
+
+            UpdateMouse(x, y) {
+                this.#mouseX = x;
+                this.#mouseY = y;
+
+                // Shift in relation to the simulation camera
+                this.#mouseX -= (-this.#camera.position.x + this.#camera.resolution.x / 2);
+                this.#mouseY -= (-this.#camera.position.y + this.#camera.resolution.y / 2);
+            }
+
+            Simulate() {
+                for (let sceneEntity of this.#sceneEntities) { // Create new cloned instances
+                    this.#entities.push(new Entity(sceneEntity));
+                }
+                this.#running = true;
+            }
+
+            Quit() {
+                this.#running = false;
+                this.#entities = [];
+            }
+
+            CreateEntity(radius, position) {
+                if (this.#running) { return; }
+                this.#sceneEntities.push(new Entity(radius, position, "Object" + (this.#sceneEntities.length + 1)));
+            }
+
+            get entities() {
+                if (this.#running) { return this.#entities; }
+                else { return this.#sceneEntities; }
+            }
+            get running() { return this.#running; }
+            get mouseX() { return this.#mouseX; }
+            get mouseY() { return this.#mouseY; }
+            get camera() { return this.#camera; }
+        }
+
+        class Vector { // 2D Vectors
+            #x; #y;
+            constructor(x = 0, y = 0) {
+                this.#x = x;
+                this.#y = y;
+            }
+            add(vector) {
+                return new Vector(this.#x + vector.x, this.#y + vector.y);
+            }
+            subtract(vector) {
+                return new Vector(this.#x - vector.x, this.#y - vector.y);
+            }
+            multiply(factor) {
+                return new Vector(this.#x * factor, this.#y * factor);
+            }
+            divide(factor) {
+                return new Vector(this.#x / factor, this.#y / factor);
+            }
+            distance(vector) {
+                return Math.sqrt((this.#x - vector.x) ** 2 + (this.#y - vector.y) ** 2);
+            }
+            get x() { return this.#x; }
+            set x(value) { this.#x = value; }
+            get y() { return this.#y; }
+            set y(value) { this.#y = value; }
+            get magnitude() { return Math.sqrt(this.#x ** 2 + this.#y ** 2); }
+            get normalized() {
+                return new Vector(-this.#y, this.#x).unit();
+            }
+            get unit() {
+                if (this.magnitude == 0) { return new Vector(); }
+                return new Vector(this.#x / this.magnitude, this.#y / this.magnitude);
+            }
+            static dot(vector1, vector2) {
+                return vector1.x * vector2.x + vector1.y * vector2.y;
+            }
+        }
+
+        // Basis for the viewport camera
+        class Camera {
+            position;
+            resolution;
+
+            constructor(position, resolution) {
+                this.position = new Vector(position[0], position[1]);
+                this.resolution = new Vector(resolution[0], resolution[1]);
+            }
+        }
+
+        // Basis of every game object
+        class Entity {
+            // Identity
+            name;
+
+            // Graphics
+            color;
+
+            // Physics
+            radius;
+            kinematic;
+            mass;
+            elasticity;
+            position;
+            velocity;
+            acceleration;
+
+            constructor(radius, position, name) {
+                if (radius instanceof Entity) { // Create a clone
+                    this.name = radius.name;
+                    this.color = radius.color;
+                    this.radius = radius.radius;
+                    this.kinematic = radius.kinematic;
+                    this.mass = radius.mass;
+                    this.elasticity = radius.elasticity;
+                    this.position = radius.position;
+                    this.velocity = radius.velocity;
+                    this.acceleration = radius.acceleration;
+                }
+                else { // Completely new entity
+                    this.radius = radius;
+                    this.position = position;
+                    this.name = name;
+
+                    // Default values
+                    this.color = [Random(0, 255), Random(0, 255), Random(0, 255)];
+                    this.kinematic = false;
+                    this.mass = 2;
+                    this.elasticity = 1;
+                    this.velocity = new Vector();
+                    this.acceleration = new Vector();
+                }
+            }
+
+            relocate() { // Move the entity based on its current acceleration and velocity
+                this.acceleration = this.acceleration.unit;
+                this.velocity = this.velocity.add(this.acceleration);
+                this.position = this.position.add(this.velocity);
+            }
+
+            impulse(force) { // Takes a vector for force
+                this.velocity.x += force.x / this.mass;
+                this.velocity.y += force.y / this.mass;
+            }
+        }
+    </script>
+
+    <!-- Simulation Demos -->
+    <script type="text/javascript">
+
+        // Realistic  (Masses: 1.98 * (10 ** 30), 5.97 * (10 ** 24), 7.35 * (10 ** 22)) (Positions: (0, 0), (-1.49 * (10 ** 8), 0), (earth.position.x - 2.39 * (10 ** 5), 0)) (Radii: 6.96 * (10 ** 5), 6.38 * (10 ** 3), 1.74 * (10 ** 3))
+
+        function TwoBody() {
+            let object1 = new Entity(50, new Vector(0, 0), "M1");
+            object1.mass = 10000; object1.color = [255, 0, 0];
+
+            let object2 = new Entity(20, new Vector(-300, -100), "M2");
+            object2.mass = 20; object2.color = [0, 0, 255];
+            object2.impulse(new Vector(0, 50));
+
+            let gravitationalConstant = 0.0000000000674;
+
+            let clear = true;
+            let hypotenuse = true;
+            let auto = false; // Auto simulate # of iterations
+            let iteratons = 10000;
+            let simulating = false;
+
+            function SimulateTwoBody() {
+                let ctx = canvas.getContext("2d");
+                if (clear) { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+                // Equation: G(m1 * m2) / r^2
+
+                force = gravitationalConstant * (object1.mass * object2.mass) / (object1.position.distance(object2.position) ** 2);
+                object1.impulse(object2.position.subtract(object1.position).multiply(force).unit);
+                object2.impulse(object1.position.subtract(object2.position).multiply(force).unit);
+
+                object1.relocate();
+                object2.relocate();
+
+                let color = object1.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), object1.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+                color = object2.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), object2.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+
+                if (hypotenuse) {
+                    ctx.strokeStyle = "rgb(255, 255, 255)";
+                    ctx.beginPath();
+                    ctx.moveTo(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.font = "20px arial";
+                    ctx.fillStyle = "rgb(255, 255, 255)";
+                    ctx.textAlign = "center";
+                    ctx.fillText("X", object2.position.x / 2 - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.fillText("Y", object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y / 2 - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.fillText("r", object2.position.x / 2 - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y / 2 - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                }
+
+                if (!auto && simulating) { window.requestAnimationFrame(SimulateTwoBody); }
+            }
+
+            if (auto) {
+                for (let index = 0; index < iteratons; index++) {
+                    SimulateTwoBody();
+                }
+            }
+            else {
+                SimulateTwoBody();
+            }
+
+            window.addEventListener("keydown", (event) => {
+                if (event.code == "ArrowUp") {
+                    force = new Vector(0, -25);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowDown") {
+                    force = new Vector(0, 25);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowLeft") {
+                    force = new Vector(-25, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowRight") {
+                    force = new Vector(25, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "KeyP") {
+                    if (simulating) {
+                        simulating = false;
+                    }
+                    else {
+                        simulating = true;
+                        SimulateTwoBody();
+                    }
+                }
+                if (event.code == "KeyC") {
+                    let ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+        }
+
+        function ThreeBody() {
+            let object1 = new Entity(50, new Vector(0, 0), "M1");
+            object1.mass = 10000; object1.color = [255, 0, 0];
+
+            let object2 = new Entity(20, new Vector(-300, -100), "M2");
+            object2.mass = 20; object2.color = [0, 0, 255];
+            object2.impulse(new Vector(0, 50));
+
+            let object3 = new Entity(30, new Vector(300, 100), "M3");
+            object3.mass = 100; object3.color = [0, 255, 0];
+            object3.impulse(new Vector(0, -200));
+
+            let gravitationalConstant = 0.0000000000674;
+
+            let clear = false;
+            let hypotenuse = true;
+            let auto = false; // Auto simulate # of iterations
+            let iteratons = 10000;
+            let simulating = false;
+
+            function SimulateThreeBody() {
+                let ctx = canvas.getContext("2d");
+                if (clear) { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+                // Equation: G(m1 * m2) / r^2
+
+                force1 = gravitationalConstant * (object1.mass * object2.mass) / (object1.position.distance(object2.position) ** 2);
+                force2 = gravitationalConstant * (object1.mass * object3.mass) / (object1.position.distance(object3.position) ** 2);
+                force3 = gravitationalConstant * (object2.mass * object3.mass) / (object2.position.distance(object3.position) ** 2);
+
+                object1.impulse(object2.position.subtract(object1.position).multiply(force1).unit);
+                object1.impulse(object3.position.subtract(object1.position).multiply(force2).unit);
+
+                object2.impulse(object1.position.subtract(object2.position).multiply(force1).unit);
+                object2.impulse(object3.position.subtract(object2.position).multiply(force3).unit);
+
+                object3.impulse(object1.position.subtract(object3.position).multiply(force2).unit);
+                object3.impulse(object2.position.subtract(object3.position).multiply(force3).unit);
+
+                object1.relocate();
+                object2.relocate();
+                object3.relocate();
+
+                let color = object1.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), object1.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+                color = object2.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), object2.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+                color = object3.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(object3.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object3.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), object3.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+
+                if (hypotenuse) {
+                    ctx.strokeStyle = "rgb(255, 255, 255)";
+                    ctx.beginPath();
+                    ctx.moveTo(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.strokeStyle = "rgb(255, 255, 255)";
+                    ctx.beginPath();
+                    ctx.moveTo(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object3.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object3.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.strokeStyle = "rgb(255, 255, 255)";
+                    ctx.beginPath();
+                    ctx.moveTo(object3.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object3.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                }
+
+                if (!auto && simulating) { window.requestAnimationFrame(SimulateThreeBody); }
+            }
+
+            if (auto) {
+                for (let index = 0; index < iteratons; index++) {
+                    SimulateThreeBody();
+                }
+            }
+            else {
+                SimulateThreeBody();
+            }
+
+            window.addEventListener("keydown", (event) => {
+                if (event.code == "ArrowUp") {
+                    force = new Vector(0, -25);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowDown") {
+                    force = new Vector(0, 25);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowLeft") {
+                    force = new Vector(-25, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowRight") {
+                    force = new Vector(25, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "KeyP") {
+                    if (simulating) {
+                        simulating = false;
+                    }
+                    else {
+                        simulating = true;
+                        SimulateThreeBody();
+                    }
+                }
+                if (event.code == "KeyC") {
+                    let ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+        }
+
+        function SolarSystem() {
+            let sun = new Entity(100, new Vector(), "SUN");
+            sun.color = [255, 255, 0];
+            sun.mass = 1000000000;
+
+            let earth = new Entity(20, new Vector(-400, 0), "EARTH");
+            earth.color = [0, 255, 0];
+            earth.mass = 2;
+            earth.impulse(new Vector(0, 18));
+
+            //let moon = new Entity(10, new Vector(-500, 0), "MOON");
+            //moon.color = [100, 100, 100];
+            //moon.mass = 7.35 * (10 ** 22) / massScaler;
+            //moon.impulse(new Vector(0, 30));
+
+            let gravitationalConstant = 0.0000000000674;
+
+            let clear = false;
+            let hypotenuse = true;
+            let auto = false; // Auto simulate # of iterations
+            let iteratons = 10000;
+            let simulating = false;
+
+            function SimulateSolarSystem() {
+                let ctx = canvas.getContext("2d");
+                if (clear) { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+                // Equation: G(m1 * m2) / r^2
+
+                const distance = sun.position.distance(earth.position) / 100;
+                const force = gravitationalConstant * (sun.mass * earth.mass) / (distance ** 2);
+
+                sun.impulse(earth.position.subtract(sun.position).divide(distance).multiply(force));
+
+                earth.impulse(sun.position.subtract(earth.position).divide(distance).multiply(force));
+
+                sun.relocate();
+                earth.relocate();
+
+                let color = sun.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(sun.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), sun.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), sun.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+                color = earth.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(earth.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), earth.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), earth.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+
+                if (!auto && simulating) { window.requestAnimationFrame(SimulateSolarSystem); }
+            }
+
+            if (auto) {
+                for (let index = 0; index < iteratons; index++) {
+                    SimulateSolarSystem();
+                }
+            }
+            else {
+                SimulateSolarSystem();
+            }
+
+            window.addEventListener("keydown", (event) => {
+                if (event.code == "ArrowUp") {
+                    force = new Vector(0, -25);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowDown") {
+                    force = new Vector(0, 25);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowLeft") {
+                    force = new Vector(-25, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "ArrowRight") {
+                    force = new Vector(25, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "KeyP") {
+                    if (simulating) {
+                        simulating = false;
+                    }
+                    else {
+                        simulating = true;
+                        SimulateSolarSystem();
+                    }
+                }
+                if (event.code == "KeyC") {
+                    let ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+        }
+
+        function ReducedMass() {
+            let mass = 10000;
+            let initialForce = mass * 2.875;
+
+            let object1 = new Entity(30, new Vector(-300, 0), "M1");
+            object1.mass = mass; object1.color = [255, 0, 0];
+            object1.impulse(new Vector(0, initialForce));
+
+            let object2 = new Entity(30, new Vector(300, 0), "M2");
+            object2.mass = mass; object2.color = [0, 0, 255];
+            object2.impulse(new Vector(0, -initialForce));
+
+            let gravitationalConstant = 1;
+
+            let clear = true;
+            let hypotenuse = true;
+            let auto = false; // Auto simulate # of iterations
+            let iteratons = 10000;
+            let simulating = false;
+
+            function SimulateReducedMass() {
+                let ctx = canvas.getContext("2d");
+                if (clear) { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+                // Equation: G(m1 * m2) / r^2
+                // Mass equation: P * (4/3) * pi * r^3
+
+                distance = object1.position.distance(object2.position); // (10 ** 5)
+                if (distance <= 0) { distance = 1; } // For now, put a cap to prevent insane forces
+                force = gravitationalConstant * (object1.mass * object2.mass) / (distance ** 2);
+                object1.impulse(object2.position.subtract(object1.position).divide(distance).multiply(force));
+                object2.impulse(object1.position.subtract(object2.position).divide(distance).multiply(force));
+
+                console.log(distance);
+
+                object1.relocate();
+                object2.relocate();
+
+                ctx.beginPath();
+                ctx.arc(-(logic.camera.position.x - logic.camera.resolution.x / 2), -(logic.camera.position.y - logic.camera.resolution.y / 2), 300, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(255, 255, 0)"; ctx.stroke();
+
+                let color = object1.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), object1.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+                color = object2.color; ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2), object2.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = "rgb(0, 0, 0)"; ctx.stroke(); ctx.fill();
+
+                if (hypotenuse) {
+                    ctx.strokeStyle = "rgb(255, 255, 255)";
+                    ctx.beginPath();
+                    ctx.moveTo(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(object1.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.lineTo(object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.stroke();
+                    ctx.font = "20px arial";
+                    ctx.fillStyle = "rgb(255, 255, 255)";
+                    ctx.textAlign = "center";
+                    ctx.fillText("X", object2.position.x / 2 - (logic.camera.position.x - logic.camera.resolution.x / 2), object1.position.y - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.fillText("Y", object2.position.x - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y / 2 - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                    ctx.fillText("r", object2.position.x / 2 - (logic.camera.position.x - logic.camera.resolution.x / 2), object2.position.y / 2 - (logic.camera.position.y - logic.camera.resolution.y / 2));
+                }
+
+                ctx.beginPath();
+                ctx.arc(-(logic.camera.position.x - logic.camera.resolution.x / 2), -(logic.camera.position.y - logic.camera.resolution.y / 2), 10, 0, 2 * Math.PI);
+                ctx.fillStyle = "rgb(0, 255, 0)"; ctx.fill();
+
+                if (!auto && simulating) { window.requestAnimationFrame(SimulateReducedMass); }
+            }
+
+            if (auto) {
+                for (let index = 0; index < iteratons; index++) {
+                    SimulateReducedMass();
+                }
+            }
+            else {
+                SimulateReducedMass();
+            }
+
+            window.addEventListener("keydown", (event) => {
+                if (event.code == "KeyW") {
+                    force = new Vector(0, -object2.mass);
+                    object2.impulse(force);
+                }
+                if (event.code == "KeyS") {
+                    force = new Vector(0, object2.mass);
+                    object2.impulse(force);
+                }
+                if (event.code == "KeyA") {
+                    force = new Vector(-object2.mass, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "KeyD") {
+                    force = new Vector(object2.mass, 0);
+                    object2.impulse(force);
+                }
+                if (event.code == "KeyP") {
+                    if (simulating) {
+                        simulating = false;
+                    }
+                    else {
+                        simulating = true;
+                        SimulateReducedMass();
+                    }
+                }
+                if (event.code == "KeyC") {
+                    let ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
